@@ -7,7 +7,7 @@ The package is intentionally site-specific. Its defaults use Jean Zay's shared d
 ## Installation
 
 ```bash
-pip install "jeanzaydata @ git+ssh://git@github.com/Diffusion-Research-Lab/jeanzaydata.git"
+pip install "jeanzaydata @ git+https://github.com/Diffusion-Research-Lab/jeanzaydata.git"
 ```
 
 For development:
