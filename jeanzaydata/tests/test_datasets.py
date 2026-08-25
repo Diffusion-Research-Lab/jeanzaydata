@@ -8,15 +8,7 @@ from types import SimpleNamespace
 import pandas as pd
 import pytest
 import torch
-from jeanzaydata._dataset import (
-    DatasetPayload,
-    fetch_real_data,
-    get_dataset_metadata as get_real_dataset_metadata,
-    list_datasets as list_real_datasets,
-    _load_cifar100_lt, _load_hrrr, _load_imagenet_lt, _load_lvis,
-    _resolve_real_data_home, _standardize_split_arrays,
-    _resolve_dataset, split_sample_indices,
-)
+from jeanzaydata._dataset import DatasetPayload, fetch_real_data, get_dataset_metadata as get_real_dataset_metadata, list_datasets as list_real_datasets, _load_cifar100_lt, _load_hrrr, _load_imagenet_lt, _load_lvis, _resolve_real_data_home, _standardize_split_arrays, _resolve_dataset, split_sample_indices
 
 
 def _write_lvis_fixture(root):
