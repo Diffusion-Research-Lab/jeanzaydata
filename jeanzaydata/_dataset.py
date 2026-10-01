@@ -706,11 +706,14 @@ def _load_imagenet_lt(**kwargs: Any) -> DatasetPayload:
     return payload
 
 
-def _load_hrrr(**kwargs: Any) -> torch.Tensor:
+def _load_hrrr(crop_size: int = 100, **kwargs: Any) -> torch.Tensor:
     filename = "hrrr_apcp_100x100.pt"
     if kwargs:
         unexpected = ", ".join(sorted(kwargs))
         raise TypeError(f"Unexpected HRRR loader kwargs: {unexpected}.")
+    crop_size = int(crop_size)
+    if not 1 <= crop_size <= 100:
+        raise ValueError("HRRR crop_size must be between 1 and 100")
     store_root = os.getenv("STORE")
     if not store_root:
         raise RuntimeError(
@@ -740,7 +743,8 @@ def _load_hrrr(**kwargs: Any) -> torch.Tensor:
             f"Unexpected HRRR tensor shape in {path}: {tuple(tensor.shape)}. Expected (N, 1, 100, 100)."
         )
     valid_samples = torch.isfinite(tensor).flatten(start_dim=1).all(dim=1)
-    return tensor[valid_samples].contiguous()
+    start = (100 - crop_size) // 2
+    return tensor[valid_samples, :, start:start + crop_size, start:start + crop_size].contiguous()
 
 
 REAL_DATASETS: dict[str, DatasetEntry] = {

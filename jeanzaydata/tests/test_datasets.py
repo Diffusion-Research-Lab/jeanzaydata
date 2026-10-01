@@ -93,6 +93,22 @@ def test_load_hrrr_reads_fixed_store_file_and_drops_nonfinite_samples(tmp_path, 
     assert torch.equal(loaded[0], values[1].to(torch.float32))
 
 
+def test_load_hrrr_crops_center_without_changing_sample_filter(tmp_path, monkeypatch):
+    hrrr_dir = tmp_path / "hrrr_data"
+    hrrr_dir.mkdir()
+    values = torch.arange(2 * 100 * 100, dtype=torch.float32).reshape(2, 1, 100, 100)
+    values[0, 0, 0, 0] = float("nan")
+    torch.save(values, hrrr_dir / "hrrr_apcp_100x100.pt")
+    monkeypatch.setenv("STORE", str(tmp_path))
+
+    loaded = _load_hrrr(crop_size=64)
+
+    assert loaded.shape == (1, 1, 64, 64)
+    assert torch.equal(loaded[0], values[1, :, 18:82, 18:82])
+    with pytest.raises(ValueError, match="crop_size"):
+        _load_hrrr(crop_size=101)
+
+
 def test_load_hrrr_accepts_saved_payload_dict(tmp_path, monkeypatch):
     hrrr_dir = tmp_path / "hrrr_data"
     hrrr_dir.mkdir()
